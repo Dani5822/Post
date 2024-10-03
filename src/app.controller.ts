@@ -50,6 +50,18 @@ export class AppController {
     if(!accountdata.balance||!accountdata.id||!accountdata.owner){
       errors.push("Minden mezőt kötelező megadni!")
     }
+    if(!/^\d{4}-\d{4}$/.test(accountdata.id)){
+      errors.push('A számlaszám nem megfelelő formátum!')
+    }
+
+    const balance=parseInt(accountdata.balance)
+    if(isNaN(balance)){
+      errors.push("A kezdő egyenlegnek szám kell hogy legyen")
+    }
+    if(this.#accounts.find(e=>e.id==accountdata.id != undefined)){
+      errors.push('Ilyen azonosítójú számla már létezik')
+    }
+
     let newaccount={
       id:accountdata.id,
       owner:accountdata.owner,
@@ -60,11 +72,12 @@ export class AppController {
         errors,
         data:accountdata
       })
+    }else{
+      this.#accounts.push(newaccount)
+      response.redirect(303,'/newaccountsuccess')
     }
 
-    this.#accounts.push(newaccount)
-    response.redirect(303,'/newaccountsuccess')
-   
+    
   }
 
   @Get('newaccountsuccess')
