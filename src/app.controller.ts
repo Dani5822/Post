@@ -38,7 +38,7 @@ export class AppController {
   @Render('newaccountform')
   newaccountform(){
     return{
-      error:[],
+      errors:[],
       data:{}
 
     }
